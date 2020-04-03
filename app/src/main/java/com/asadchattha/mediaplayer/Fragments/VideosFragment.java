@@ -21,6 +21,7 @@ import com.asadchattha.mediaplayer.Model.MediaFileInfo;
 import com.asadchattha.mediaplayer.R;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,9 +139,17 @@ public class VideosFragment extends Fragment {
                 videoCursor.moveToPosition(i);
                 String filepath = videoCursor.getString(column_index);
 
+                /* Experiment New feature to get File Parent Folder name*/
+                int videPathColumnIndex = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                String videoPath = videoCursor.getString(videPathColumnIndex);
+                File file = new File(videoPath);
+                String dir = file.getParent();
+
+
                 mediaFileInfo.setFilePath(filepath);
-                mediaFileInfo.setFileType("video"); //TODO Reductant No need to specify type
+                mediaFileInfo.setFileType("video"); //TODO Redundant, No need to specify type
                 mediaList.add(mediaFileInfo);
+
 
             }
 

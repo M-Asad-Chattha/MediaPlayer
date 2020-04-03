@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.asadchattha.mediaplayer.Fragments.FoldersFragment;
+import com.asadchattha.mediaplayer.Fragments.HistoryFragment;
 import com.asadchattha.mediaplayer.Fragments.VideosFragment;
 
 
@@ -25,6 +26,9 @@ public class AdapterForPager extends FragmentStatePagerAdapter {
             case 1:
                 FoldersFragment foldersFragment = new FoldersFragment();
                 return foldersFragment;
+            case 2:
+                HistoryFragment historyFragment = new HistoryFragment();
+                return historyFragment;
             default:
                 return null;
         }
@@ -32,7 +36,7 @@ public class AdapterForPager extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -41,6 +45,8 @@ public class AdapterForPager extends FragmentStatePagerAdapter {
             return "Videos";
         } else if (position == 1) {
             return "Folders";
+        } else if (position == 2) {
+            return "History";
         } else {
             return null;
         }
