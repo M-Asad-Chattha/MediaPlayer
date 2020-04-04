@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@drawable/gradient_background"
     tools:context=".Fragments.FoldersFragment">
 
-
-    <GridView
-        android:id="@+id/gv_folder"
-        android:background="@drawable/gradient_background"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_folders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:numColumns="2"></GridView>
-
+        android:paddingRight="10dp" />
 
 </RelativeLayout>

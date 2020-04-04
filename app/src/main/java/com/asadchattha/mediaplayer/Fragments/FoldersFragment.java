@@ -1,11 +1,14 @@
 package com.asadchattha.mediaplayer.Fragments;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -13,22 +16,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.asadchattha.mediaplayer.Adapters.Adapter_PhotosFolder;
-import com.asadchattha.mediaplayer.Model.Model_images;
+import com.asadchattha.mediaplayer.Adapters.AdapterFolders;
+import com.asadchattha.mediaplayer.Model.FolderModel;
 import com.asadchattha.mediaplayer.R;
+import com.asadchattha.mediaplayer.VideosActivity;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FoldersFragment extends Fragment {
+public class FoldersFragment extends Fragment implements AdapterFolders.OnFolderListener {
 
-    public static ArrayList<Model_images> al_images = new ArrayList<>();
+    public static ArrayList<FolderModel> foldersList = new ArrayList<>();
     boolean boolean_folder;
-    Adapter_PhotosFolder obj_adapter;
-    GridView gv_folder;
+
+    private AdapterFolders adapterFolders;
+    private RecyclerView foldersRecyclerView;
+    private RecyclerView.LayoutManager layoutManager;
 
     public FoldersFragment() {
         // Required empty public constructor
@@ -41,38 +48,39 @@ public class FoldersFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_folders, container, false);
 
-        gv_folder = view.findViewById(R.id.gv_folder);
-        fn_imagespath();
+        foldersRecyclerView = view.findViewById(R.id.recycler_view_folders);
+
+        loadVideosFoldersData();
 
         return view;
     }
 
 
-    public ArrayList<Model_images> fn_imagespath() {
-        al_images.clear();
+    public void loadVideosFoldersData() {
+        foldersList.clear();
 
         int int_position = 0;
         Uri uri;
         Cursor cursor;
         int column_index_data, column_index_folder_name;
 
-        String absolutePathOfImage = null;
-        uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String absolutePathOfVideo = null;
+        uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
-        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Video.Media.BUCKET_DISPLAY_NAME};
 
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+        final String orderBy = MediaStore.Video.Media.DATE_TAKEN;
         cursor = getContext().getContentResolver().query(uri, projection, null, null, orderBy + " DESC");
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME);
         while (cursor.moveToNext()) {
-            absolutePathOfImage = cursor.getString(column_index_data);
-            Log.e("Column", absolutePathOfImage);
+            absolutePathOfVideo = cursor.getString(column_index_data);
+            Log.e("Column", absolutePathOfVideo);
             Log.e("Folder", cursor.getString(column_index_folder_name));
 
-            for (int i = 0; i < al_images.size(); i++) {
-                if (al_images.get(i).getStr_folder().equals(cursor.getString(column_index_folder_name))) {
+            for (int i = 0; i < foldersList.size(); i++) {
+                if (foldersList.get(i).getFolderName().equals(cursor.getString(column_index_folder_name))) {
                     boolean_folder = true;
                     int_position = i;
                     break;
@@ -83,37 +91,42 @@ public class FoldersFragment extends Fragment {
 
 
             if (boolean_folder) {
-
-                ArrayList<String> al_path = new ArrayList<>();
-                al_path.addAll(al_images.get(int_position).getAl_imagepath());
-                al_path.add(absolutePathOfImage);
-                al_images.get(int_position).setAl_imagepath(al_path);
+                ArrayList<String> folderVideosPathList = new ArrayList<>();
+                folderVideosPathList.addAll(foldersList.get(int_position).getFolderVideosPathsList());
+                folderVideosPathList.add(absolutePathOfVideo);
+                foldersList.get(int_position).setFolderVideosPathsList(folderVideosPathList);
 
             } else {
                 ArrayList<String> al_path = new ArrayList<>();
-                al_path.add(absolutePathOfImage);
-                Model_images obj_model = new Model_images();
-                obj_model.setStr_folder(cursor.getString(column_index_folder_name));
-                obj_model.setAl_imagepath(al_path);
+                al_path.add(absolutePathOfVideo);
+                FolderModel obj_model = new FolderModel();
+                obj_model.setFolderName(cursor.getString(column_index_folder_name));
+                obj_model.setFolderVideosPathsList(al_path);
 
-                al_images.add(obj_model);
-
-
+                foldersList.add(obj_model);
             }
-
 
         }
 
-
-        for (int i = 0; i < al_images.size(); i++) {
-            Log.e("FOLDER", al_images.get(i).getStr_folder());
-            for (int j = 0; j < al_images.get(i).getAl_imagepath().size(); j++) {
-                Log.e("FILE", al_images.get(i).getAl_imagepath().get(j));
+        for (int i = 0; i < foldersList.size(); i++) {
+            Log.e("FOLDER", foldersList.get(i).getFolderName());
+            for (int j = 0; j < foldersList.get(i).getFolderVideosPathsList().size(); j++) {
+                Log.e("FILE", foldersList.get(i).getFolderVideosPathsList().get(j));
             }
         }
-        obj_adapter = new Adapter_PhotosFolder(getContext(), al_images);
-        gv_folder.setAdapter(obj_adapter);
-        return al_images;
+
+        layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        adapterFolders = new AdapterFolders(getContext(), foldersList, this);
+        foldersRecyclerView.setLayoutManager(layoutManager);
+        foldersRecyclerView.setAdapter(adapterFolders);
     }
 
+
+    @Override
+    public void onFolderClick(int position) {
+        Intent intent = new Intent(getContext(), VideosActivity.class);
+        startActivity(intent);
+
+        Toast.makeText(getContext(), foldersList.get(position).getFolderName(), Toast.LENGTH_SHORT).show();
+    }
 }
