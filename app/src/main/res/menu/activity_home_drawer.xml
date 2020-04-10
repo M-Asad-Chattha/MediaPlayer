@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_feedback"
-            android:icon="@drawable/ic_feedback_grey"
+            android:icon="@drawable/ic_feedback_white"
             android:title="Feedback" />
         <item
             android:id="@+id/nav_shareApp"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/ic_menu_share_white"
             android:title="Share App" />
         <item
             android:id="@+id/nav_rateUs"
-            android:icon="@drawable/ic_menu_rate_grey"
+            android:icon="@drawable/ic_menu_rate_white"
             android:title="Rate US" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_settings_grey"
+            android:icon="@drawable/ic_menu_settings_white"
             android:title="Settings" />
     </group>
 
@@ -26,11 +26,11 @@
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_menu_share_white"
                 android:title="@string/menu_share" />
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_send_white"
                 android:title="@string/menu_send" />
         </menu>
     </item>

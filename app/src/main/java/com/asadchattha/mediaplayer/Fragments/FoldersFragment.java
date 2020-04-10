@@ -125,6 +125,8 @@ public class FoldersFragment extends Fragment implements AdapterFolders.OnFolder
     @Override
     public void onFolderClick(int position) {
         Intent intent = new Intent(getContext(), VideosActivity.class);
+        intent.putStringArrayListExtra("VideoPaths", foldersList.get(position).getFolderVideosPathsList());
+
         startActivity(intent);
 
         Toast.makeText(getContext(), foldersList.get(position).getFolderName(), Toast.LENGTH_SHORT).show();

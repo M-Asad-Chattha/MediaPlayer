@@ -166,6 +166,7 @@ public class VideosFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             //setProgressBarIndeterminateVisibility(true);
+            
         }
 
         @Override
